@@ -1,7 +1,62 @@
+@import url("https://fonts.googleapis.com/css2?family=Tourney:ital,wght@0,100..900;1,100..900&display=swap");
+
 *,
 *::before,
 *::after {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+}
+
+:root {
+  --primary-background-color: #001233;
+
+  --primary-text-color: #0466c8;
+
+  --accent-color: #fdc500;
+}
+
+body {
+  background-color: var(--primary-background-color);
+  height: 100vh;
+  width: 100vw;
+  user-select: none;
+}
+
+#starting-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+
+  height: 100%;
+
+  & > h1 {
+    font-family: "Tourney", serif;
+    font-size: 10rem;
+    color: var(--primary-text-color);
+    text-shadow: 5px 5px var(--accent-color);
+    text-transform: lowercase;
+  }
+
+  & > button {
+    font-family: "Tourney", serif;
+    font-size: 3rem;
+    color: var(--accent-color);
+    text-transform: uppercase;
+
+    padding: 1rem 4rem;
+    border: none;
+    background-color: var(--primary-text-color);
+    cursor: pointer;
+  }
+
+  & > button:hover {
+    box-shadow: 15px 15px var(--primary-text-color);
+    background-color: var(--accent-color);
+
+    color: var(--primary-text-color);
+    font-weight: 500;
+  }
 }

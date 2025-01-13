@@ -1,5 +1,5 @@
 {
-  "name": "your-project-name",
+  "name": "battleship",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
@@ -15,7 +15,7 @@
     "deploy": "git add dist -f && git commit -m 'chore: deployment commit' && git subtree push --prefix dist origin production"
   },
   "keywords": [],
-  "author": "your-name <email@example.domain>",
+  "author": "Swagatam Pati <swagatamheroz@gmail.com>",
   "license": "ISC",
   "description": "",
   "devDependencies": {

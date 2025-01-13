@@ -1,14 +1,12 @@
 "use strict";
 
-const minDimension = 1;
-const maxDimension = 4;
+const allowableDImensions = [5, 4, 3, 3, 2];
 
 export default class Ship {
   constructor(dimension) {
     if (
       !Number.isInteger(dimension) ||
-      dimension < minDimension ||
-      dimension > maxDimension
+      !allowableDImensions.includes(dimension)
     ) {
       throw new Error("Invalid argument for 'dimension' parameter");
     }

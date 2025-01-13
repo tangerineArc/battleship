@@ -6,32 +6,32 @@ import Ship from "../src/models/ship.js";
 const boardDimension = 10;
 
 test("getMissedAttackPositions (1)", () => {
-  const ship1 = new Ship(1);
   const ship2 = new Ship(2);
   const ship3 = new Ship(3);
   const ship4 = new Ship(4);
+  const ship5 = new Ship(5);
 
   const ocean = new GameBoard();
-  ocean.placeShip(ship1, [0, 0], [0, 0]);
   ocean.placeShip(ship2, [1, 3], [1, 4]);
   ocean.placeShip(ship3, [4, 6], [6, 6]);
   ocean.placeShip(ship4, [6, 1], [9, 1]);
+  ocean.placeShip(ship5, [0, 0], [0, 4]);
 
   ocean.receiveAttack([1, 1]);
   expect(ocean.getMissedAttackPositions()).toEqual([[1, 1]]);
 });
 
 test("getMissedAttackPositions (2)", () => {
-  const ship1 = new Ship(1);
   const ship2 = new Ship(2);
   const ship3 = new Ship(3);
   const ship4 = new Ship(4);
+  const ship5 = new Ship(5);
 
   const ocean = new GameBoard();
-  ocean.placeShip(ship1, [0, 0], [0, 0]);
   ocean.placeShip(ship2, [1, 3], [1, 4]);
   ocean.placeShip(ship3, [4, 6], [6, 6]);
   ocean.placeShip(ship4, [6, 1], [9, 1]);
+  ocean.placeShip(ship5, [0, 0], [0, 4]);
 
   ocean.receiveAttack([1, 1]);
   ocean.receiveAttack([0, 0]);
@@ -40,16 +40,16 @@ test("getMissedAttackPositions (2)", () => {
 });
 
 test("getMissedAttackPositions (3)", () => {
-  const ship1 = new Ship(1);
   const ship2 = new Ship(2);
   const ship3 = new Ship(3);
   const ship4 = new Ship(4);
+  const ship5 = new Ship(5);
 
   const ocean = new GameBoard();
-  ocean.placeShip(ship1, [0, 0], [0, 0]);
   ocean.placeShip(ship2, [1, 3], [1, 4]);
   ocean.placeShip(ship3, [4, 6], [6, 6]);
   ocean.placeShip(ship4, [6, 1], [9, 1]);
+  ocean.placeShip(ship5, [0, 0], [0, 4]);
 
   ocean.receiveAttack([1, 1]);
   ocean.receiveAttack([0, 0]);
@@ -62,16 +62,16 @@ test("getMissedAttackPositions (3)", () => {
 });
 
 test("areAllShipsSunk (1)", () => {
-  const ship1 = new Ship(1);
   const ship2 = new Ship(2);
   const ship3 = new Ship(3);
   const ship4 = new Ship(4);
+  const ship5 = new Ship(5);
 
   const ocean = new GameBoard();
-  ocean.placeShip(ship1, [0, 0], [0, 0]);
   ocean.placeShip(ship2, [1, 3], [1, 4]);
   ocean.placeShip(ship3, [4, 6], [6, 6]);
   ocean.placeShip(ship4, [6, 1], [9, 1]);
+  ocean.placeShip(ship5, [0, 0], [0, 4]);
 
   ocean.receiveAttack([1, 1]);
   ocean.receiveAttack([0, 0]);
@@ -81,16 +81,16 @@ test("areAllShipsSunk (1)", () => {
 });
 
 test("areAllShipsSunk (2)", () => {
-  const ship1 = new Ship(1);
   const ship2 = new Ship(2);
   const ship3 = new Ship(3);
   const ship4 = new Ship(4);
+  const ship5 = new Ship(5);
 
   const ocean = new GameBoard();
-  ocean.placeShip(ship1, [0, 0], [0, 0]);
   ocean.placeShip(ship2, [1, 3], [1, 4]);
   ocean.placeShip(ship3, [4, 6], [6, 6]);
   ocean.placeShip(ship4, [6, 1], [9, 1]);
+  ocean.placeShip(ship5, [0, 0], [0, 4]);
 
   for (let i = 0; i < boardDimension; i++) {
     for (let j = 0; j < boardDimension; j++) {

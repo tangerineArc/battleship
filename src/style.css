@@ -14,16 +14,19 @@
   --primary-text-color: #0466c8;
 
   --accent-color: #fdc500;
+
+  --dead-border-color: #c1121f;
+  --dead-background-color: #c1121f44;
 }
 
 body {
-  background-color: var(--primary-background-color);
   height: 100vh;
   width: 100vw;
   user-select: none;
 }
 
 #starting-screen {
+  /* display: none; */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -31,6 +34,7 @@ body {
   gap: 2rem;
 
   height: 100%;
+  background-color: var(--primary-background-color);
 
   & > h1 {
     font-family: "Tourney", serif;
@@ -59,4 +63,64 @@ body {
     color: var(--primary-text-color);
     font-weight: 500;
   }
+}
+
+#game-screen {
+  height: 100%;
+  background-color: var(--primary-background-color);
+
+  /* display: flex; */
+  display: none;
+  justify-content: center;
+  align-items: center;
+  gap: 10rem;
+
+  & > .board {
+    display: flex;
+    flex-direction: column;
+    /* gap: 0.2rem; */
+
+    & > .row {
+      display: flex;
+      /* gap: 0.2rem; */
+
+      & > .cell {
+        width: 2.8rem;
+        height: 2.8rem;
+        /* background: #000; */
+        border: 1px dashed var(--primary-text-color);
+      }
+    }
+  }
+}
+
+#board-2 .cell {
+  cursor: crosshair;
+}
+
+#board-2 .cell:hover:not(.disabled-cell):not(.dead-cell):not(.missed-cell) {
+  background-color: var(--primary-text-color);
+}
+
+.disabled-cell {
+  border: 1px dotted #023e7d !important;
+  cursor: not-allowed !important;
+}
+
+.dead-cell {
+  background-color: var(--dead-background-color);
+  border: 1px dotted var(--dead-border-color) !important;
+  cursor: not-allowed !important;
+}
+
+.missed-cell {
+  background-color: #ffd50044;
+  border: 1px dotted #ffd500 !important;
+  cursor: not-allowed !important;
+}
+
+.ship-cell {
+  background-color: #06d6a044;
+  border: 1px dotted #06d6a0 !important;
+  cursor: move;
 }

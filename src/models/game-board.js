@@ -1,13 +1,13 @@
 "use strict";
 
-const boardDimension = 10;
+const BOARD_DIMENSION = 10;
 
 export default class GameBoard {
   constructor() {
     const board = [];
-    for (let i = 0; i < boardDimension; i++) {
+    for (let i = 0; i < BOARD_DIMENSION; i++) {
       const row = [];
-      for (let j = 0; j < boardDimension; j++) {
+      for (let j = 0; j < BOARD_DIMENSION; j++) {
         row.push({ ship: null, isHit: false });
       }
       board.push(row);
@@ -50,8 +50,8 @@ export default class GameBoard {
 
   getMissedAttackPositions() {
     const positions = [];
-    for (let i = 0; i < boardDimension; i++) {
-      for (let j = 0; j < boardDimension; j++) {
+    for (let i = 0; i < BOARD_DIMENSION; i++) {
+      for (let j = 0; j < BOARD_DIMENSION; j++) {
         if (this.board[i][j].ship === null && this.board[i][j].isHit) {
           positions.push([i, j]);
         }
@@ -62,8 +62,8 @@ export default class GameBoard {
 
   areAllShipsSunk() {
     let res = true;
-    for (let i = 0; i < boardDimension; i++) {
-      for (let j = 0; j < boardDimension; j++) {
+    for (let i = 0; i < BOARD_DIMENSION; i++) {
+      for (let j = 0; j < BOARD_DIMENSION; j++) {
         if (this.board[i][j].ship !== null && !this.board[i][j].isHit) {
           res = false;
           break;

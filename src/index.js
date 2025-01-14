@@ -11,12 +11,12 @@ import { startingScreen, startButton } from "./dom-cache/startingScreen.js";
 import GameBoard from "./models/game-board.js";
 import Ship from "./models/ship.js";
 
+import { BOARD_DIMENSION } from "./globals/constants.js";
+
 startButton.addEventListener("click", () => {
   startingScreen.style.display = "none";
   gameScreen.style.display = "flex";
 });
-
-const BOARD_DIMENSION = 10;
 
 const player1Ships = [
   {

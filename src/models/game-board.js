@@ -1,6 +1,6 @@
 "use strict";
 
-const BOARD_DIMENSION = 10;
+import { BOARD_DIMENSION } from "../globals/constants.js";
 
 export default class GameBoard {
   constructor() {

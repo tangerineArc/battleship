@@ -1,12 +1,12 @@
 "use strict";
 
-const allowableDImensions = [5, 4, 3, 3, 2];
+import { ALLOWED_SHIP_DIMENSIONS } from "../globals/constants.js";
 
 export default class Ship {
   constructor(dimension) {
     if (
       !Number.isInteger(dimension) ||
-      !allowableDImensions.includes(dimension)
+      !ALLOWED_SHIP_DIMENSIONS.includes(dimension)
     ) {
       throw new Error("Invalid argument for 'dimension' parameter");
     }

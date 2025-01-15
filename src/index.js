@@ -24,11 +24,8 @@ import Player from "./models/player.js";
 const player1 = new Player("HUMAN");
 const player2 = new Player("BOT");
 
-const player1Board = new GameBoard();
-const player2Board = new GameBoard();
-
-player1.setGameBoard(player1Board);
-player2.setGameBoard(player2Board);
+player1.setGameBoard(new GameBoard());
+player2.setGameBoard(new GameBoard());
 
 player1.setShips(generateShips());
 player2.setShips(generateShips());
@@ -44,7 +41,7 @@ startButton.addEventListener("click", () => {
 });
 
 randomizeButton.addEventListener("click", () => {
-  player1Board.clear();
+  player1.gameBoard.clear();
 
   player1.setShips(generateShips());
   player1.placeAllShips();
@@ -54,12 +51,16 @@ randomizeButton.addEventListener("click", () => {
 
 for (let i = 0; i < BOARD_DIMENSION; i++) {
   for (let j = 0; j < BOARD_DIMENSION; j++) {
-    board1Cells_DOM[i][j].addEventListener("dragstart", (event) => {
+    const cell_DOM = board1Cells_DOM[i][j];
+
+    cell_DOM.addEventListener("dragstart", (event) => {
       const cell = player1.gameBoard.board[i][j];
 
       if (!cell.ship) return;
 
-      const viablePositions = player1Board.getPlaceablePositions(cell.ship);
+      const viablePositions = player1.gameBoard.getPlaceablePositions(
+        cell.ship,
+      );
 
       for (let a = 0; a < BOARD_DIMENSION; a++) {
         for (let b = 0; b < BOARD_DIMENSION; b++) {
@@ -72,7 +73,7 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
       event.dataTransfer.setData("text/plain", JSON.stringify([i, j]));
     });
 
-    board1Cells_DOM[i][j].addEventListener("dragend", () => {
+    cell_DOM.addEventListener("dragend", () => {
       for (let a = 0; a < BOARD_DIMENSION; a++) {
         for (let b = 0; b < BOARD_DIMENSION; b++) {
           board1Cells_DOM[a][b].classList.remove("non-viable-cell");
@@ -80,40 +81,40 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
       }
     });
 
-    board1Cells_DOM[i][j].addEventListener("dragenter", (event) => {
-      if (player1Board.board[i][j].ship) return;
+    cell_DOM.addEventListener("dragenter", (event) => {
+      if (player1.gameBoard.board[i][j].ship) return;
 
       event.preventDefault();
       event.target.classList.add("drag-over");
     });
 
-    board1Cells_DOM[i][j].addEventListener("dragover", (event) => {
-      if (player1Board.board[i][j].ship) return;
+    cell_DOM.addEventListener("dragover", (event) => {
+      if (player1.gameBoard.board[i][j].ship) return;
 
       event.preventDefault();
       event.target.classList.add("drag-over");
     });
 
-    board1Cells_DOM[i][j].addEventListener("dragleave", (event) => {
-      if (player1Board.board[i][j].ship) return;
+    cell_DOM.addEventListener("dragleave", (event) => {
+      if (player1.gameBoard.board[i][j].ship) return;
 
       event.target.classList.remove("drag-over");
     });
 
-    board1Cells_DOM[i][j].addEventListener("drop", (event) => {
-      if (player1Board.board[i][j].ship) return;
+    cell_DOM.addEventListener("drop", (event) => {
+      if (player1.gameBoard.board[i][j].ship) return;
 
       event.target.classList.remove("drag-over");
 
       const currPos = JSON.parse(event.dataTransfer.getData("text/plain"));
-      const startPos = getStartPos(currPos[0], currPos[1], player1Board);
+      const startPos = getStartPos(currPos[0], currPos[1], player1.gameBoard);
 
-      const ship = player1Board.board[currPos[0]][currPos[1]].ship;
+      const ship = player1.gameBoard.board[currPos[0]][currPos[1]].ship;
       const orientation =
-        player1Board.board[currPos[0]][currPos[1]].orientation;
-      const index = player1Board.board[currPos[0]][currPos[1]].index;
+        player1.gameBoard.board[currPos[0]][currPos[1]].orientation;
+      const index = player1.gameBoard.board[currPos[0]][currPos[1]].index;
 
-      const viablePositions = player1Board.getPlaceablePositions(ship);
+      const viablePositions = player1.gameBoard.getPlaceablePositions(ship);
 
       if (orientation === VERTICAL_ORIENTATION) {
         for (let a = i - index; a <= i - index + ship.dimension - 1; a++) {
@@ -139,17 +140,17 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
           pos2 = [i, j - index + ship.dimension - 1];
         }
 
-        player1Board.removeShip(ship);
-        player1Board.placeShip(ship, pos1, pos2);
+        player1.gameBoard.removeShip(ship);
+        player1.gameBoard.placeShip(ship, pos1, pos2);
         renderBoard(player1, board1Cells_DOM);
       } catch {
         const endPos = getEndPos(startPos, ship, orientation);
-        player1Board.placeShip(ship, startPos, endPos);
+        player1.gameBoard.placeShip(ship, startPos, endPos);
       }
     });
 
-    board1Cells_DOM[i][j].addEventListener("click", () => {
-      if (!player1Board.board[i][j].ship) return;
+    cell_DOM.addEventListener("click", () => {
+      if (!player1.gameBoard.board[i][j].ship) return;
       changeShipOrientation(i, j);
     });
   }
@@ -202,7 +203,7 @@ function changeShipOrientation(i, j) {
 
   const startPos = getStartPos(i, j, player1.gameBoard);
 
-  const viablePositions = player1Board.getPlaceablePositions(ship);
+  const viablePositions = player1.gameBoard.getPlaceablePositions(ship);
 
   if (cell.orientation === HORIZONTAL_ORIENTATION) {
     for (let a = startPos[0] + 1; a < startPos[0] + ship.dimension; a++) {
@@ -220,8 +221,8 @@ function changeShipOrientation(i, j) {
 
   const endPos = getEndPos(startPos, ship, cell.orientation);
 
-  player1Board.removeShip(ship);
-  player1Board.placeShip(ship, startPos, endPos);
+  player1.gameBoard.removeShip(ship);
+  player1.gameBoard.placeShip(ship, startPos, endPos);
 
   renderBoard(player1, board1Cells_DOM);
 }

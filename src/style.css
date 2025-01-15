@@ -67,7 +67,9 @@ body {
 
 #game-screen {
   height: 100%;
+  width: 100%;
   background-color: var(--primary-background-color);
+  /* background: #000; */
 
   display: none;
   flex-direction: column;
@@ -77,20 +79,67 @@ body {
 
   & > #boards-container {
     display: flex;
-    gap: 10rem;
+    justify-content: space-around;
+    gap: 5rem;
+    width: 100%;
+    /* background-color: #fff; */
 
     & > .board {
       display: flex;
       flex-direction: column;
 
+      & > .x-axis {
+        display: flex;
+
+        & > div {
+          width: 2.8rem;
+          height: 2.8rem;
+          /* background-color: #fff; */
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          color: var(--accent-color);
+          font-family: "Tourney", serif;
+          font-weight: 500;
+          /* text-align: center; */
+        }
+      }
+
       & > .row {
         display: flex;
+
+        & > .row-number {
+          width: 2.8rem;
+          height: 2.8rem;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          color: var(--accent-color);
+          font-family: "Tourney", serif;
+          font-weight: 500;
+        }
 
         & > .cell {
           width: 2.8rem;
           height: 2.8rem;
           border: 1px dashed var(--primary-text-color);
         }
+      }
+
+      & .player-tag {
+        /* background-color: #fff; */
+        text-align: center;
+        color: var(--accent-color);
+        font-family: "Tourney", serif;
+        font-weight: 500;
+        font-size: 1.2rem;
+
+        padding-top: 1rem;
+        padding-left: 2.8rem;
       }
     }
   }

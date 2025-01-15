@@ -219,8 +219,6 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
 }
 
 function markInvalidCells(startPos, endPos) {
-  console.log("1 Sunk!!!");
-  console.log(startPos, endPos);
   for (
     let i = Math.max(0, startPos[0] - 1);
     i <= Math.min(BOARD_DIMENSION - 1, endPos[0] + 1);

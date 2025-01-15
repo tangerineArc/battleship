@@ -26,7 +26,14 @@ export default class GameBoard {
   }
 
   placeShip(ship, startPos, endPos) {
-    if (startPos[0] > endPos[0] || startPos[1] > endPos[1]) {
+    if (
+      startPos[0] > endPos[0] ||
+      startPos[1] > endPos[1] ||
+      endPos[0] >= BOARD_DIMENSION ||
+      endPos[1] >= BOARD_DIMENSION ||
+      startPos[0] < 0 ||
+      startPos[1] < 0
+    ) {
       throw new Error("Invalid start and end positions");
     }
 

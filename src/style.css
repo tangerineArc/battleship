@@ -105,7 +105,9 @@ body {
 .disabled-cell {
   border: 1px dotted #023e7d !important;
   cursor: not-allowed !important;
+  background-color: transparent !important;
 }
+
 
 .dead-cell {
   background-color: var(--dead-background-color);
@@ -117,6 +119,16 @@ body {
   background-color: #ffd50044;
   border: 1px dotted #ffd500 !important;
   cursor: not-allowed !important;
+}
+
+.drag-over {
+  background-color: #7ae582dd;
+}
+
+.non-viable-cell {
+  border: 1px dotted #023e7d !important;
+  cursor: not-allowed !important;
+  background-color: transparent;
 }
 
 .ship-cell {

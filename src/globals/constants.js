@@ -1,3 +1,5 @@
+"use strict";
+
 const BOARD_DIMENSION = 10;
 
 const ALLOWED_SHIP_DIMENSIONS = [5, 4, 3, 3, 2];

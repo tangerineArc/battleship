@@ -5,6 +5,7 @@ import "./style.css";
 import {
   gameScreen,
   board1Cells as board1Cells_DOM,
+  board2Cells as board2Cells_DOM,
   randomizeButton,
 } from "./dom-cache/game-screen.js";
 import { startingScreen, startButton } from "./dom-cache/startingScreen.js";
@@ -20,14 +21,24 @@ import {
 import generateShips from "./utils/ships-loci.js";
 
 const player1Board = new GameBoard();
+const player2Board = new GameBoard();
 
 const player1Ships = generateShips();
+const player2Ships = generateShips();
 
 for (let i = 0; i < player1Ships.length; i++) {
   player1Board.placeShip(
     player1Ships[i].ship,
     player1Ships[i].startPos,
     player1Ships[i].endPos,
+  );
+}
+
+for (let i = 0; i < player2Ships.length; i++) {
+  player2Board.placeShip(
+    player2Ships[i].ship,
+    player2Ships[i].startPos,
+    player2Ships[i].endPos,
   );
 }
 
@@ -110,7 +121,7 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
       event.target.classList.remove("drag-over");
 
       const currPos = JSON.parse(event.dataTransfer.getData("text/plain"));
-      const startPos = getStartPos(currPos[0], currPos[1]);
+      const startPos = getStartPos(currPos[0], currPos[1], player1Board);
 
       const ship = player1Board.board[currPos[0]][currPos[1]].ship;
       const orientation =
@@ -173,8 +184,69 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
   }
 }
 
+for (let i = 0; i < BOARD_DIMENSION; i++) {
+  for (let j = 0; j < BOARD_DIMENSION; j++) {
+    board2Cells_DOM[i][j].addEventListener("click", (event) => {
+      if (
+        event.target.classList.contains("dead-cell") ||
+        event.target.classList.contains("missed-cell") ||
+        event.target.classList.contains("disabled-cell")
+      ) {
+        return;
+      }
+
+      const ship = player2Board.board[i][j].ship;
+      const orientation = player2Board.board[i][j].orientation;
+
+      if (ship) {
+        event.target.classList.add("dead-cell");
+        ship.hit();
+
+        if (ship.isSunk()) {
+          const startPos = getStartPos(i, j, player2Board);
+          const endPos =
+            orientation === HORIZONTAL_ORIENTATION
+              ? [startPos[0], startPos[1] + ship.dimension - 1]
+              : [startPos[0] + ship.dimension - 1, startPos[1]];
+
+          markInvalidCells(startPos, endPos);
+        }
+      } else {
+        event.target.classList.add("missed-cell");
+      }
+    });
+  }
+}
+
+function markInvalidCells(startPos, endPos) {
+  console.log("1 Sunk!!!");
+  console.log(startPos, endPos);
+  for (
+    let i = Math.max(0, startPos[0] - 1);
+    i <= Math.min(BOARD_DIMENSION - 1, endPos[0] + 1);
+    i++
+  ) {
+    for (
+      let j = Math.max(0, startPos[1] - 1);
+      j <= Math.min(BOARD_DIMENSION - 1, endPos[1] + 1);
+      j++
+    ) {
+      if (
+        board2Cells_DOM[i][j].classList.contains("ship-cell") ||
+        board2Cells_DOM[i][j].classList.contains("dead-cell") ||
+        board2Cells_DOM[i][j].classList.contains("missed-cell") ||
+        board2Cells_DOM[i][j].classList.contains("disabled-cell")
+      ) {
+        continue;
+      }
+
+      board2Cells_DOM[i][j].classList.add("disabled-cell");
+    }
+  }
+}
+
 function changeShipOrientation(i, j) {
-  const startPos = getStartPos(i, j);
+  const startPos = getStartPos(i, j, player1Board);
 
   const viablePositions = player1Board.getPlaceablePositions(
     player1Board.board[i][j].ship,
@@ -223,11 +295,11 @@ function changeShipOrientation(i, j) {
   }
 }
 
-function getStartPos(i, j) {
+function getStartPos(i, j, boardInstance) {
   const startPos = [i, j];
-  let idx = player1Board.board[i][j].index;
+  let idx = boardInstance.board[i][j].index;
   while (idx--) {
-    if (player1Board.board[i][j].orientation === HORIZONTAL_ORIENTATION) {
+    if (boardInstance.board[i][j].orientation === HORIZONTAL_ORIENTATION) {
       startPos[1]--;
     } else {
       startPos[0]--;

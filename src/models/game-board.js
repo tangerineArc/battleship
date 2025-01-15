@@ -80,6 +80,7 @@ export default class GameBoard {
           this.board[i][j].ship = null;
           this.board[i][j].index = null;
           this.board[i][j].orientation = null;
+          this.board[i][j].isHit = false;
         }
       }
     }

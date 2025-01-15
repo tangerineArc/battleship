@@ -5,11 +5,11 @@ import "./style.css";
 import {
   gameScreen,
   board1Cells as board1Cells_DOM,
+  randomizeButton,
 } from "./dom-cache/game-screen.js";
 import { startingScreen, startButton } from "./dom-cache/startingScreen.js";
 
 import GameBoard from "./models/game-board.js";
-import Ship from "./models/ship.js";
 
 import {
   BOARD_DIMENSION,
@@ -17,40 +17,11 @@ import {
   VERTICAL_ORIENTATION,
 } from "./globals/constants.js";
 
-startButton.addEventListener("click", () => {
-  startingScreen.style.display = "none";
-  gameScreen.style.display = "flex";
-});
-
-const player1Ships = [
-  {
-    ship: new Ship(5),
-    startPos: [0, 5],
-    endPos: [0, 9],
-  },
-  {
-    ship: new Ship(4),
-    startPos: [5, 8],
-    endPos: [8, 8],
-  },
-  {
-    ship: new Ship(3),
-    startPos: [7, 5],
-    endPos: [9, 5],
-  },
-  {
-    ship: new Ship(3),
-    startPos: [2, 5],
-    endPos: [2, 7],
-  },
-  {
-    ship: new Ship(2),
-    startPos: [2, 2],
-    endPos: [3, 2],
-  },
-];
+import generateShips from "./utils/ships-loci.js";
 
 const player1Board = new GameBoard();
+
+const player1Ships = generateShips();
 
 for (let i = 0; i < player1Ships.length; i++) {
   player1Board.placeShip(
@@ -61,6 +32,26 @@ for (let i = 0; i < player1Ships.length; i++) {
 }
 
 renderBoard1();
+
+startButton.addEventListener("click", () => {
+  startingScreen.style.display = "none";
+  gameScreen.style.display = "flex";
+});
+
+randomizeButton.addEventListener("click", () => {
+  const player1Ships = generateShips();
+
+  player1Board.clear();
+  for (let i = 0; i < player1Ships.length; i++) {
+    player1Board.placeShip(
+      player1Ships[i].ship,
+      player1Ships[i].startPos,
+      player1Ships[i].endPos,
+    );
+  }
+
+  renderBoard1();
+});
 
 for (let i = 0; i < BOARD_DIMENSION; i++) {
   for (let j = 0; j < BOARD_DIMENSION; j++) {

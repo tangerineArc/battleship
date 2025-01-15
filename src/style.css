@@ -69,27 +69,53 @@ body {
   height: 100%;
   background-color: var(--primary-background-color);
 
-  /* display: flex; */
   display: none;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10rem;
+  gap: 5rem;
 
-  & > .board {
+  & > #boards-container {
     display: flex;
-    flex-direction: column;
-    /* gap: 0.2rem; */
+    gap: 10rem;
 
-    & > .row {
+    & > .board {
       display: flex;
-      /* gap: 0.2rem; */
+      flex-direction: column;
 
-      & > .cell {
-        width: 2.8rem;
-        height: 2.8rem;
-        /* background: #000; */
-        border: 1px dashed var(--primary-text-color);
+      & > .row {
+        display: flex;
+
+        & > .cell {
+          width: 2.8rem;
+          height: 2.8rem;
+          border: 1px dashed var(--primary-text-color);
+        }
       }
+    }
+  }
+
+  & > #options {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+
+    & > button {
+      font-family: "Tourney", serif;
+      font-size: inherit;
+      font-weight: 500;
+      color: var(--accent-color);
+
+      border: 1px dashed var(--primary-text-color);
+      padding: 0.5rem 1rem;
+      background-color: transparent;
+
+      cursor: pointer;
+    }
+
+    & > button:hover {
+      border: 1px dashed var(--accent-color);
     }
   }
 }
@@ -107,7 +133,6 @@ body {
   cursor: not-allowed !important;
   background-color: transparent !important;
 }
-
 
 .dead-cell {
   background-color: var(--dead-background-color);

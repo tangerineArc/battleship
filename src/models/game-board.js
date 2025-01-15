@@ -25,6 +25,17 @@ export default class GameBoard {
     this.board = board;
   }
 
+  clear() {
+    for (let i = 0; i < BOARD_DIMENSION; i++) {
+      for (let j = 0; j < BOARD_DIMENSION; j++) {
+        this.board[i][j].ship = null;
+        this.board[i][j].isHit = false;
+        this.board[i][j].index = null;
+        this.board[i][j].orientation = null;
+      }
+    }
+  }
+
   placeShip(ship, startPos, endPos) {
     if (
       startPos[0] > endPos[0] ||

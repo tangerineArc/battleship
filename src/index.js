@@ -12,6 +12,7 @@ import {
   randomizeButton,
   startButton,
   resetButton,
+  instruction,
 } from "./dom-cache/game-screen.js";
 import { startingScreen, playButton } from "./dom-cache/startingScreen.js";
 
@@ -23,7 +24,7 @@ import {
   BOARD_DIMENSION,
   HORIZONTAL_ORIENTATION,
   VERTICAL_ORIENTATION,
-  PAUSE_DURATION
+  PAUSE_DURATION,
 } from "./globals/constants.js";
 
 import generateShips from "./utils/ships-loci.js";
@@ -58,6 +59,7 @@ startButton.addEventListener("click", () => {
   resetButton.style.display = "inline";
   randomizeButton.disabled = true;
   randomizeButton.classList.add("disabled-button");
+  instruction.textContent = "click on opponent's cells to attack";
 
   game.start();
   game.allowRepositioning = false;
@@ -68,6 +70,7 @@ resetButton.addEventListener("click", () => {
   resetButton.style.display = "none";
   randomizeButton.disabled = false;
   randomizeButton.classList.remove("disabled-button");
+  instruction.textContent = "press Start to initiate battle";
 
   player1.gameBoard.clear();
   player1.setShips(generateShips());
@@ -233,8 +236,7 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
         player2.hitAudioContext.pause();
         player2.hitAudioContext.currentTime = 0;
         player2.hitAudioContext.play();
-      }
-      else {
+      } else {
         classList.add("missed-cell");
         player2.missAudioContext.pause();
         player2.missAudioContext.currentTime = 0;
@@ -249,7 +251,7 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
 
       if (player2.gameBoard.areAllShipsSunk()) {
         game.end();
-        console.log("player1 wins");
+        instruction.textContent = "(^_^) You Win ... press Reset to continue";
         return;
       }
 
@@ -261,7 +263,8 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
         attackPlayer1();
         if (player1.gameBoard.areAllShipsSunk()) {
           game.end();
-          console.log("player2 wins");
+          instruction.textContent =
+            "(►_◄) AI rules now ... press reset to continue";
         }
       }, PAUSE_DURATION);
     });

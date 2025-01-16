@@ -26,6 +26,8 @@ const startButton = gameScreen.querySelector("#start-button");
 
 const resetButton = gameScreen.querySelector("#reset-button");
 
+const instruction = gameScreen.querySelector("#instructions > p");
+
 export {
   gameScreen,
   board1Cells,
@@ -34,4 +36,5 @@ export {
   randomizeButton,
   startButton,
   resetButton,
+  instruction,
 };

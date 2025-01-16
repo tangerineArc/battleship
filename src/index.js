@@ -7,10 +7,12 @@ import {
   board1Cells as board1Cells_DOM,
   board2Cells as board2Cells_DOM,
   randomizeButton,
+  resetButton,
 } from "./dom-cache/game-screen.js";
 import { startingScreen, startButton } from "./dom-cache/startingScreen.js";
 
 import GameBoard from "./models/game-board.js";
+import Game from "./models/game.js";
 
 import {
   BOARD_DIMENSION,
@@ -23,6 +25,9 @@ import Player from "./models/player.js";
 
 const player1 = new Player("HUMAN");
 const player2 = new Player("BOT");
+
+const game = new Game(player1, player2);
+game.start();
 
 player1.setGameBoard(new GameBoard());
 player2.setGameBoard(new GameBoard());
@@ -40,12 +45,22 @@ startButton.addEventListener("click", () => {
   gameScreen.style.display = "flex";
 });
 
-randomizeButton.addEventListener("click", () => {
+resetButton.addEventListener("click", () => {
   player1.gameBoard.clear();
-
   player1.setShips(generateShips());
   player1.placeAllShips();
+  renderBoard(player1, board1Cells_DOM);
 
+  player2.gameBoard.clear();
+  player2.setShips(generateShips());
+  player2.placeAllShips();
+  clearBoard(board2Cells_DOM);
+});
+
+randomizeButton.addEventListener("click", () => {
+  player1.gameBoard.clear();
+  player1.setShips(generateShips());
+  player1.placeAllShips();
   renderBoard(player1, board1Cells_DOM);
 });
 
@@ -106,7 +121,17 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
 
       event.target.classList.remove("drag-over");
 
-      const currPos = JSON.parse(event.dataTransfer.getData("text/plain"));
+      let currPos;
+      try {
+        currPos = JSON.parse(event.dataTransfer.getData("text/plain"));
+
+        if (!validatePosition(currPos)) {
+          throw new Error("Invalid data");
+        }
+      } catch {
+        return;
+      }
+
       const startPos = getStartPos(currPos[0], currPos[1], player1.gameBoard);
 
       const ship = player1.gameBoard.board[currPos[0]][currPos[1]].ship;
@@ -252,4 +277,27 @@ function renderBoard(playerInstance, boardCells_DOM) {
       }
     }
   }
+}
+
+function clearBoard(boardCells_DOM) {
+  for (let i = 0; i < BOARD_DIMENSION; i++) {
+    for (let j = 0; j < BOARD_DIMENSION; j++) {
+      const classList = boardCells_DOM[i][j].classList;
+      classList.remove("dead-cell");
+      classList.remove("missed-cell");
+      classList.remove("disabled-cell");
+    }
+  }
+}
+
+function validatePosition(pos) {
+  if (!(pos instanceof Array)) return false;
+
+  if (pos.length !== 2) return false;
+
+  const [i, j] = pos;
+  if (i < 0 || i >= BOARD_DIMENSION || j < 0 || j >= BOARD_DIMENSION)
+    return false;
+
+  return true;
 }

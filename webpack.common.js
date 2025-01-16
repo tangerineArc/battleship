@@ -26,7 +26,7 @@ export const common = {
         loader: "html-loader",
       },
       {
-        test: /\.(png|svg|jpg|jpeg|gif|webp)$/i,
+        test: /\.(png|svg|jpg|jpeg|gif|webp|mp3)$/i,
         type: "asset/resource",
       },
     ],

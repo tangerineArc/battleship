@@ -26,7 +26,6 @@ body {
 }
 
 #starting-screen {
-  /* display: none; */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -69,7 +68,6 @@ body {
   height: 100%;
   width: 100%;
   background-color: var(--primary-background-color);
-  /* background: #000; */
 
   display: none;
   flex-direction: column;
@@ -82,11 +80,26 @@ body {
     justify-content: space-around;
     gap: 5rem;
     width: 100%;
-    /* background-color: #fff; */
 
     & > .board {
       display: flex;
       flex-direction: column;
+
+      position: relative;
+
+      & > #loader {
+        position: absolute;
+        left: 2.8rem;
+        top: 2.8rem;
+
+        display: none;
+        justify-content: center;
+        align-items: center;
+
+        width: calc(100% - 2.8rem);
+        height: calc(100% - 5.2rem);
+        background-color: #0466c844;
+      }
 
       & > .x-axis {
         display: flex;

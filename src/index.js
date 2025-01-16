@@ -1,11 +1,14 @@
 "use strict";
 
 import "./style.css";
+import sound1 from "./sounds/shot1.mp3";
+import sound2 from "./sounds/shot2.mp3";
 
 import {
   gameScreen,
   board1Cells as board1Cells_DOM,
   board2Cells as board2Cells_DOM,
+  loader,
   randomizeButton,
   startButton,
   resetButton,
@@ -20,6 +23,7 @@ import {
   BOARD_DIMENSION,
   HORIZONTAL_ORIENTATION,
   VERTICAL_ORIENTATION,
+  PAUSE_DURATION
 } from "./globals/constants.js";
 
 import generateShips from "./utils/ships-loci.js";
@@ -38,6 +42,9 @@ player2.setShips(generateShips());
 
 player1.placeAllShips();
 player2.placeAllShips();
+
+player1.setAudioContext(new Audio(sound1), new Audio(sound2));
+player2.setAudioContext(new Audio(sound1), new Audio(sound2));
 
 renderBoard(player1, board1Cells_DOM);
 
@@ -212,7 +219,7 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
 for (let i = 0; i < BOARD_DIMENSION; i++) {
   for (let j = 0; j < BOARD_DIMENSION; j++) {
     board2Cells_DOM[i][j].addEventListener("click", (event) => {
-      if (!game.isRunning) return;
+      if (!game.isRunning || game.isPaused) return;
 
       const classList = event.target.classList;
       const cell = player2.gameBoard.board[i][j];
@@ -221,8 +228,18 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
 
       player2.gameBoard.receiveAttack([i, j]);
 
-      if (cell.ship) classList.add("dead-cell");
-      else classList.add("missed-cell");
+      if (cell.ship) {
+        classList.add("dead-cell");
+        player2.hitAudioContext.pause();
+        player2.hitAudioContext.currentTime = 0;
+        player2.hitAudioContext.play();
+      }
+      else {
+        classList.add("missed-cell");
+        player2.missAudioContext.pause();
+        player2.missAudioContext.currentTime = 0;
+        player2.missAudioContext.play();
+      }
 
       if (cell.ship?.isSunk()) {
         const startPos = getStartPos(i, j, player2.gameBoard);
@@ -236,11 +253,17 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
         return;
       }
 
-      attackPlayer1();
-      if (player1.gameBoard.areAllShipsSunk()) {
-        game.end();
-        console.log("player2 wins");
-      }
+      game.pause();
+      loader.style.display = "flex";
+      setTimeout(() => {
+        game.resume();
+        loader.style.display = "none";
+        attackPlayer1();
+        if (player1.gameBoard.areAllShipsSunk()) {
+          game.end();
+          console.log("player2 wins");
+        }
+      }, PAUSE_DURATION);
     });
   }
 }
@@ -256,8 +279,17 @@ function attackPlayer1() {
 
   player1.gameBoard.receiveAttack([i, j]);
 
-  if (cell.ship) cell_DOM.classList.add("dead-cell");
-  else cell_DOM.classList.add("missed-cell");
+  if (cell.ship) {
+    cell_DOM.classList.add("dead-cell");
+    player1.hitAudioContext.pause();
+    player1.hitAudioContext.currentTime = 0;
+    player1.hitAudioContext.play();
+  } else {
+    cell_DOM.classList.add("missed-cell");
+    player1.missAudioContext.pause();
+    player1.missAudioContext.currentTime = 0;
+    player1.missAudioContext.play();
+  }
 
   if (cell.ship?.isSunk()) {
     const startPos = getStartPos(i, j, player1.gameBoard);

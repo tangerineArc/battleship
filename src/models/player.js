@@ -11,6 +11,8 @@ export default class Player {
     this.type = type;
     this.gameBoard = null;
     this.ships = null;
+    this.hitAudioContext = null;
+    this.missAudioContext = null;
   }
 
   setGameBoard(gameBoard) {
@@ -30,5 +32,10 @@ export default class Player {
         ships[i].endPos,
       );
     }
+  }
+
+  setAudioContext(hitAudio, missAudio) {
+    this.hitAudioContext = hitAudio;
+    this.missAudioContext = missAudio;
   }
 }

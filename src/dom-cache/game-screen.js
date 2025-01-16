@@ -18,6 +18,8 @@ board2Rows.forEach((row) => {
   board2Cells.push(row.querySelectorAll(":scope > .cell"));
 });
 
+const loader = board2.querySelector(":scope > #loader");
+
 const randomizeButton = gameScreen.querySelector("#randomize-button");
 
 const startButton = gameScreen.querySelector("#start-button");
@@ -28,6 +30,7 @@ export {
   gameScreen,
   board1Cells,
   board2Cells,
+  loader,
   randomizeButton,
   startButton,
   resetButton,

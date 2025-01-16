@@ -7,12 +7,14 @@ import {
   board1Cells as board1Cells_DOM,
   board2Cells as board2Cells_DOM,
   randomizeButton,
+  startButton,
   resetButton,
 } from "./dom-cache/game-screen.js";
-import { startingScreen, startButton } from "./dom-cache/startingScreen.js";
+import { startingScreen, playButton } from "./dom-cache/startingScreen.js";
 
 import GameBoard from "./models/game-board.js";
 import Game from "./models/game.js";
+import Player from "./models/player.js";
 
 import {
   BOARD_DIMENSION,
@@ -21,13 +23,12 @@ import {
 } from "./globals/constants.js";
 
 import generateShips from "./utils/ships-loci.js";
-import Player from "./models/player.js";
+import generateAttackPosition from "./utils/attack-loci.js";
 
 const player1 = new Player("HUMAN");
 const player2 = new Player("BOT");
 
-const game = new Game(player1, player2);
-game.start();
+const game = new Game();
 
 player1.setGameBoard(new GameBoard());
 player2.setGameBoard(new GameBoard());
@@ -40,12 +41,27 @@ player2.placeAllShips();
 
 renderBoard(player1, board1Cells_DOM);
 
-startButton.addEventListener("click", () => {
+playButton.addEventListener("click", () => {
   startingScreen.style.display = "none";
   gameScreen.style.display = "flex";
 });
 
+startButton.addEventListener("click", () => {
+  startButton.style.display = "none";
+  resetButton.style.display = "inline";
+  randomizeButton.disabled = true;
+  randomizeButton.classList.add("disabled-button");
+
+  game.start();
+  game.allowRepositioning = false;
+});
+
 resetButton.addEventListener("click", () => {
+  startButton.style.display = "inline";
+  resetButton.style.display = "none";
+  randomizeButton.disabled = false;
+  randomizeButton.classList.remove("disabled-button");
+
   player1.gameBoard.clear();
   player1.setShips(generateShips());
   player1.placeAllShips();
@@ -55,6 +71,9 @@ resetButton.addEventListener("click", () => {
   player2.setShips(generateShips());
   player2.placeAllShips();
   clearBoard(board2Cells_DOM);
+
+  game.end();
+  game.allowRepositioning = true;
 });
 
 randomizeButton.addEventListener("click", () => {
@@ -69,6 +88,8 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
     const cell_DOM = board1Cells_DOM[i][j];
 
     cell_DOM.addEventListener("dragstart", (event) => {
+      if (!game.allowRepositioning) return;
+
       const cell = player1.gameBoard.board[i][j];
 
       if (!cell.ship) return;
@@ -89,6 +110,8 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
     });
 
     cell_DOM.addEventListener("dragend", () => {
+      if (!game.allowRepositioning) return;
+
       for (let a = 0; a < BOARD_DIMENSION; a++) {
         for (let b = 0; b < BOARD_DIMENSION; b++) {
           board1Cells_DOM[a][b].classList.remove("non-viable-cell");
@@ -97,6 +120,7 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
     });
 
     cell_DOM.addEventListener("dragenter", (event) => {
+      if (!game.allowRepositioning) return;
       if (player1.gameBoard.board[i][j].ship) return;
 
       event.preventDefault();
@@ -104,6 +128,7 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
     });
 
     cell_DOM.addEventListener("dragover", (event) => {
+      if (!game.allowRepositioning) return;
       if (player1.gameBoard.board[i][j].ship) return;
 
       event.preventDefault();
@@ -111,12 +136,14 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
     });
 
     cell_DOM.addEventListener("dragleave", (event) => {
+      if (!game.allowRepositioning) return;
       if (player1.gameBoard.board[i][j].ship) return;
 
       event.target.classList.remove("drag-over");
     });
 
     cell_DOM.addEventListener("drop", (event) => {
+      if (!game.allowRepositioning) return;
       if (player1.gameBoard.board[i][j].ship) return;
 
       event.target.classList.remove("drag-over");
@@ -175,6 +202,7 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
     });
 
     cell_DOM.addEventListener("click", () => {
+      if (!game.allowRepositioning) return;
       if (!player1.gameBoard.board[i][j].ship) return;
       changeShipOrientation(i, j);
     });
@@ -184,6 +212,8 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
 for (let i = 0; i < BOARD_DIMENSION; i++) {
   for (let j = 0; j < BOARD_DIMENSION; j++) {
     board2Cells_DOM[i][j].addEventListener("click", (event) => {
+      if (!game.isRunning) return;
+
       const classList = event.target.classList;
       const cell = player2.gameBoard.board[i][j];
 
@@ -197,13 +227,46 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
       if (cell.ship?.isSunk()) {
         const startPos = getStartPos(i, j, player2.gameBoard);
         const endPos = getEndPos(startPos, cell.ship, cell.orientation);
-        markInvalidCells(startPos, endPos, player2.gameBoard);
+        markInvalidCells(startPos, endPos, player2.gameBoard, board2Cells_DOM);
+      }
+
+      if (player2.gameBoard.areAllShipsSunk()) {
+        game.end();
+        console.log("player1 wins");
+        return;
+      }
+
+      attackPlayer1();
+      if (player1.gameBoard.areAllShipsSunk()) {
+        game.end();
+        console.log("player2 wins");
       }
     });
   }
 }
 
-function markInvalidCells(startPos, endPos, boardInstance) {
+function attackPlayer1() {
+  const [i, j] = generateAttackPosition(
+    player1.gameBoard.board,
+    board1Cells_DOM,
+  );
+
+  const cell = player1.gameBoard.board[i][j];
+  const cell_DOM = board1Cells_DOM[i][j];
+
+  player1.gameBoard.receiveAttack([i, j]);
+
+  if (cell.ship) cell_DOM.classList.add("dead-cell");
+  else cell_DOM.classList.add("missed-cell");
+
+  if (cell.ship?.isSunk()) {
+    const startPos = getStartPos(i, j, player1.gameBoard);
+    const endPos = getEndPos(startPos, cell.ship, cell.orientation);
+    markInvalidCells(startPos, endPos, player1.gameBoard, board1Cells_DOM);
+  }
+}
+
+function markInvalidCells(startPos, endPos, boardInstance, boardCells_DOM) {
   for (
     let i = Math.max(0, startPos[0] - 1);
     i <= Math.min(BOARD_DIMENSION - 1, endPos[0] + 1);
@@ -217,7 +280,7 @@ function markInvalidCells(startPos, endPos, boardInstance) {
       const cell = boardInstance.board[i][j];
       if (cell.ship || cell.isHit) continue;
 
-      board2Cells_DOM[i][j].classList.add("disabled-cell");
+      boardCells_DOM[i][j].classList.add("disabled-cell");
     }
   }
 }
@@ -275,6 +338,9 @@ function renderBoard(playerInstance, boardCells_DOM) {
         boardCells_DOM[i][j].classList.remove("ship-cell");
         boardCells_DOM[i][j].draggable = false;
       }
+      boardCells_DOM[i][j].classList.remove("dead-cell");
+      boardCells_DOM[i][j].classList.remove("missed-cell");
+      boardCells_DOM[i][j].classList.remove("disabled-cell");
     }
   }
 }

@@ -20,6 +20,15 @@ board2Rows.forEach((row) => {
 
 const randomizeButton = gameScreen.querySelector("#randomize-button");
 
+const startButton = gameScreen.querySelector("#start-button");
+
 const resetButton = gameScreen.querySelector("#reset-button");
 
-export { gameScreen, board1Cells, board2Cells, randomizeButton, resetButton };
+export {
+  gameScreen,
+  board1Cells,
+  board2Cells,
+  randomizeButton,
+  startButton,
+  resetButton,
+};

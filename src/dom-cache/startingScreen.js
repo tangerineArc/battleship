@@ -2,6 +2,6 @@
 
 const startingScreen = document.querySelector("#starting-screen");
 
-const startButton = startingScreen.querySelector(":scope > button");
+const playButton = startingScreen.querySelector(":scope > button");
 
-export { startingScreen, startButton };
+export { startingScreen, playButton };

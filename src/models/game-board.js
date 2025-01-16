@@ -146,15 +146,12 @@ export default class GameBoard {
   }
 
   areAllShipsSunk() {
-    let res = true;
     for (let i = 0; i < BOARD_DIMENSION; i++) {
       for (let j = 0; j < BOARD_DIMENSION; j++) {
-        if (this.board[i][j].ship !== null && !this.board[i][j].isHit) {
-          res = false;
-          break;
-        }
+        if (this.board[i][j].ship !== null && !this.board[i][j].isHit)
+          return false;
       }
     }
-    return res;
+    return true;
   }
 }

@@ -5,6 +5,7 @@ export default class Game {
     this.isRunning = false;
     this.allowRepositioning = true;
     this.isPaused = false;
+    this.doCleanUp = false;
   }
 
   start() {

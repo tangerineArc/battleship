@@ -4,6 +4,7 @@ import "./style.css";
 import sound1 from "./sounds/shot1.mp3";
 import sound2 from "./sounds/shot2.mp3";
 
+import { startingScreen, playButton } from "./dom-cache/startingScreen.js";
 import {
   gameScreen,
   board1Cells as board1Cells_DOM,
@@ -14,7 +15,6 @@ import {
   resetButton,
   instruction,
 } from "./dom-cache/game-screen.js";
-import { startingScreen, playButton } from "./dom-cache/startingScreen.js";
 
 import GameBoard from "./models/game-board.js";
 import Game from "./models/game.js";
@@ -84,6 +84,7 @@ resetButton.addEventListener("click", () => {
 
   game.end();
   game.allowRepositioning = true;
+  game.doCleanUp = true;
 });
 
 randomizeButton.addEventListener("click", () => {
@@ -259,8 +260,12 @@ for (let i = 0; i < BOARD_DIMENSION; i++) {
       loader.style.display = "flex";
       setTimeout(() => {
         game.resume();
+
         loader.style.display = "none";
+
         attackPlayer1();
+        game.doCleanUp = false;
+
         if (player1.gameBoard.areAllShipsSunk()) {
           game.end();
           instruction.textContent =
@@ -275,6 +280,7 @@ function attackPlayer1() {
   const [i, j] = generateAttackPosition(
     player1.gameBoard.board,
     board1Cells_DOM,
+    game,
   );
 
   const cell = player1.gameBoard.board[i][j];

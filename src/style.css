@@ -20,11 +20,11 @@
 }
 
 body {
-  height: 100vh;
   width: 100vw;
   user-select: none;
   background-color: var(--primary-background-color);
   padding: 1rem;
+  padding-top: 5rem;
 }
 
 #starting-screen {
@@ -79,8 +79,8 @@ body {
 
   & > #boards-container {
     display: flex;
-    justify-content: space-around;
-    gap: 5rem;
+    justify-content: center;
+    gap: 6rem;
     width: 100%;
 
     & > .board {
